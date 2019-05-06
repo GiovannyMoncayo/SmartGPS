@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SmartGPS</string>
+
+    <string name="act_main_gyroscope_label">Giroscopio</string>
+    <string name="act_main_accelerometer_label">Acelerómetro</string>
+    <string name="act_main_no_acuracy">Sin Suficiente presición</string>
+
+</resources>
