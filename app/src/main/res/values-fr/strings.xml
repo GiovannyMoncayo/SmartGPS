@@ -1,2 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">SmartGPS </string>
+
+    <!-- activity_view.xml -->
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>>
+
+    <!-- fragment_main.xml -->
+    <string name="lblTxtDescription">Description</string>
+    <string name="lblBtnPrev">PRÉCÉDENT</string>
+    <string name="lblBtnNext">SUIVANT</string>
+    <string name="lblBtnEnd">TERMINER</string>
+
+    <!-- activity_main.xml -->
+    <string name="lblTxtUserInfo">User Info</string>
+    <string name="lblGyroscope">Gyroscope</string>
+    <string name="lblAccelerometer">Accelerometer</string>
+    <string name="lblNSatellites">Satellites</string>
+    <string name="lblAccuracy">Accuracy</string>
+    <string name="lblGpsInfo">Location</string>
+    <string name="lblVelocity">Velocity</string>
+    <string name="lblActivity">Activity</string>
+    <string name="lblAltitude">Altitude</string>
+    <string name="lblTxtVerifyOk">Active Account</string>
+    <string name="lblTxtVerifyNoOk">Inactive Account. Check your email to confirm the account. If you do not find it, check spam or verify that the email you entered is correct! The information will not be synchronized until you confirm your data.</string>
+    <string name="act_main_no_acuracy">Not enough Accuracy</string>
+
+    <!-- SplashActivity -->
+    <string name="msgErrorDspVerification">ERROR IN SERVICE: Device could not be verified!</string>
+    <string name="msgDspUnverified">Your device has not yet been verified. Check your email to confirm the account. \nIf you don't find it, check your spam box or verify that the email you entered is correct! </string>
+    <string name="msgDspVerified">Device Verified!!</string>
+
+    <!-- ViewActivity -->
+    <string name="msgGPSPermissionNoGranted">Location Grants Denied</string>
+    <string name="msgWelcome">Welcome </string>
+    <string name="msgEmailSent">We have sent you an email to confirm your account, if you do not find it check it in the spam.\n The information will not be synchronized until you confirm your data.</string>>
+    <string name="msgErrorUser">User Validation Error!</string>
+    <string name="msgErrorQuestionResp">Enter a description</string>
+    <string name="msgErrorQuestionOpc">Select an option</string>
+    <string name="msgErrorQuestionTxt">No question description found</string>
+    <string name="msgInvalidEmail">The email is not valid</string>
+    <string name="msgInvalidYear">The year must be between 1950 and 2005</string>
+
+    <!-- SplashActivity ViewActivity MainActivity-->
+    <string name="msgErrorServerResponse">Ops! Something went wrong. Check your Internet connection!!</string>
+
+    <!-- MainActivity -->
+    <string name="msgManualSync">Wait a moment...</string>
+    <string name="msgManualSyncEmpty">All records synchronized</string>
+    <string name="msgManualSyncOk">Records manually synchronized!</string>
+    <string name="msgManualSyncFail">ERROR IN SERVICE: No data synchronized!</string>
+    <string name="lblTxtNoInformation">Without information</string>
+
+
+
+</resources>
