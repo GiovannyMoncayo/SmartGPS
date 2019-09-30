@@ -44,7 +44,7 @@ public class Sensor implements Serializable {
         this.altitude = altitude;
         this.velocidad = velocidad;
         this.actividad = actividad;
-        //prueba commit
+        //prueba commit 1
         this.pdop = pdop;
         this.hDpo = hDpo;
         this.vDpo = vDpo;
