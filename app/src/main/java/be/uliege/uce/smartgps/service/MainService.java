@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -71,7 +70,7 @@ public class MainService extends Service {
 
     private NotificationUtils mNotificationUtils;
 
-    private Map<String, String> dataSinc;
+    private Map<String, String> dataSync;
 
     IBinder mBinder = new MainService.LocalBinder();
 
@@ -114,7 +113,7 @@ public class MainService extends Service {
 
                 if (intent.getAction().equals(Constants.SENSOR_ACTIVITY)) {
 
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("sensorDates");
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.SENSOR_ACTIVITY);
                     if(sensor.getAclX() != null && !sensor.getAclX().equals("null")) {
                         sensorObject.setAclX(sensor.getAclX());
                         sensorObject.setAclY(sensor.getAclY());
@@ -136,10 +135,10 @@ public class MainService extends Service {
 
                 if (intent.getAction().equals(Constants.GPS_ACTIVITY)) {
 
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("gpsDates");
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.GPS_ACTIVITY);
 
-                    sensorObject.setPrecision(sensor.getPrecision());
-                    sensorObject.setNumSatelites(sensor.getNumSatelites());
+                    sensorObject.setAccuracy(sensor.getAccuracy());
+                    sensorObject.setnSatellites(sensor.getnSatellites());
 
                 }
             }
@@ -151,9 +150,9 @@ public class MainService extends Service {
 
                 if (intent.getAction().equals(Constants.LOCATION_ACTIVITY)) {
 
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("locationDates");
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.LOCATION_ACTIVITY);
 
-                    sensorObject.setVelocidad(sensor.getVelocidad());
+                    sensorObject.setVelocity(sensor.getVelocity());
                     sensorObject.setLongitude(sensor.getLongitude());
                     sensorObject.setLatitude(sensor.getLatitude());
                 }
@@ -166,8 +165,8 @@ public class MainService extends Service {
 
                 if (intent.getAction().equals(Constants.DETECTED_ACTIVITY)) {
 
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("detectedActivities");
-                    sensorActual.setActividad(sensor.getActividad());
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.DETECTED_ACTIVITY);
+                    sensorActual.setActivity(sensor.getActivity());
 
                 }
             }
@@ -186,8 +185,8 @@ public class MainService extends Service {
                             sensorObject.setLatitude(sensor.getLatitude());
                         }
 
-                        if(sensorObject.getVelocidad() == null) {
-                            sensorObject.setVelocidad(sensor.getVelocidad());
+                        if(sensorObject.getVelocity() == null) {
+                            sensorObject.setVelocity(sensor.getVelocity());
                         }
 
                         if(sensorObject.getLongitude() == null) {
@@ -208,7 +207,7 @@ public class MainService extends Service {
 
                     startTracking();
 
-                    if(count >= Constants.FREQUENSE_SECOND) {
+                    if(count >= Constants.FREQUENCY_SECOND) {
                         count = processData(count);
                     }
                     count = count+1;
@@ -242,7 +241,7 @@ public class MainService extends Service {
         sensorObject = new be.uliege.uce.smartgps.entities.Sensor();
         sensorObject.setDateInsert(new Timestamp(System.currentTimeMillis()));
         sensorObject.setDateUpdate(new Timestamp(System.currentTimeMillis()));
-        sensorObject.setActividad(sensorActual.getActividad());
+        sensorObject.setActivity(sensorActual.getActivity());
         sensorObject.setAltitude(sensorActual.getAltitude());
 
         LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -259,12 +258,10 @@ public class MainService extends Service {
     }
 
     private void startTracking() {
-
         isMyServiceRunning(DetectedActivitiesService.class);
         isMyServiceRunning(SensorService.class);
         isMyServiceRunning(LocationService.class);
         isMyServiceRunning(GoogleLocationService.class);
-
     }
 
     private class GetUrlContentTask extends AsyncTask<String, Integer, String> {
@@ -389,9 +386,9 @@ public class MainService extends Service {
                 boolean resultado = response.contains(palabra);
 
                 if(response != null && resultado){
-                    if(dataSinc != null) {
+                    if(dataSync != null) {
 
-                        for (Map.Entry<String, String> entry : dataSinc.entrySet()) {
+                        for (Map.Entry<String, String> entry : dataSync.entrySet()) {
                             try {
                                 dbSensor.deleteData(Integer.parseInt(entry.getKey()));
                             } catch (Exception e) {
@@ -399,18 +396,18 @@ public class MainService extends Service {
                             }
                         }
 
-                        final String url = Constants.URL_NOTIFICATION+"?msj="+ (Build.MODEL+" --> Ha sincronizado "+dataSinc.size()+" elementos automaticamente "+String.valueOf(new Timestamp(System.currentTimeMillis()))+"." ).replace(" ", "%20");
-                        new Thread(new Runnable() {
-                            public void run(){
-                                new GetUrlContentTask().execute(url);
-                            }
-                        }).start();
+                      //  final String url = Constants.URL_NOTIFICADOR_TELEGRAM +"?msj="+ (Build.MODEL+" --> Ha sincronizado "+dataSync.size()+" elementos automaticamente "+String.valueOf(new Timestamp(System.currentTimeMillis()))+"." ).replace(" ", "%20");
+                      //  new Thread(new Runnable() {
+                      //      public void run(){
+                      //         new GetUrlContentTask().execute(url);
+                      //      }
+                      //  }).start();
 
-                        dataSinc = null;
+                        dataSync = null;
                         Log.i(TAG+".onResponse", "Sincronizado...");
                     }
                 }else{
-                    dataSinc = null;
+                    dataSync = null;
                     Log.e(TAG+".onResponse", "Error al sincronizar...!");
                     Toast.makeText(MainService.this,"Error al sincronizar...!",Toast.LENGTH_SHORT).show();
                 }
@@ -450,10 +447,10 @@ public class MainService extends Service {
                 dbSensor.countRowsData())){
 
 
-            dataSinc =  dbSensor.getAllData();
+            dataSync =  dbSensor.getAllData();
             List<Sensor> positionsSinc = new ArrayList<>();
 
-            for(Map.Entry<String, String> entry : dataSinc.entrySet()) {
+            for(Map.Entry<String, String> entry : dataSync.entrySet()) {
                 positionsSinc.add(new Gson().fromJson(entry.getValue(), Sensor.class));
             }
 

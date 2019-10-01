@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="be.uliege.uce.smartgps.activities.ViewActivity$PlaceholderFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imgView"
-            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:padding="10dp" />
+
         <TextView
             android:id="@+id/txtDescription"
-            android:padding="10dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
-            />
-        <EditText
-            android:id="@+id/edtxValor"
             android:padding="10dp"
+            android:text="@string/lblTxtDescription"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edTxValor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:visibility="gone"/>
+            android:padding="10dp"
+            android:visibility="gone" />
 
         <RadioGroup
             android:id="@+id/radio"
@@ -43,71 +41,71 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
 
-        <RadioButton
-            android:id="@+id/rdbtnValor1"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-           />
-        <RadioButton
-            android:id="@+id/rdbtnValor2"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-           />
-        <RadioButton
-            android:id="@+id/rdbtnValor3"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-           />
-        <RadioButton
-            android:id="@+id/rdbtnValor4"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-           />
-        <RadioButton
-            android:id="@+id/rdbtnValor5"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-           />
+            <RadioButton
+                android:id="@+id/rdbtnValor1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rdbtnValor2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rdbtnValor3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rdbtnValor4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rdbtnValor5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="gone" />
 
         </RadioGroup>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="30dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="30dp">
 
             <Button
-                android:id="@+id/btnAnterior"
+                android:id="@+id/btnPrev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ANTERIOR"/>
+                android:text="@string/lblBtnPrev" />
 
             <Button
-                android:id="@+id/btnFinalizar"
+                android:id="@+id/btnNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:text="FINALIZAR"/>
+                android:text="@string/lblBtnNext" />
 
             <Button
-                android:id="@+id/btnSiguiente"
+                android:id="@+id/btnEnd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SIGUIENTE"/>
+                android:text="@string/lblBtnEnd"
+                android:visibility="gone" />
+
 
         </LinearLayout>
 

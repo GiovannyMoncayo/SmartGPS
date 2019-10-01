@@ -5,49 +5,49 @@ import java.sql.Timestamp;
 
 public class Sensor implements Serializable {
 
+    private Integer dspId;
     private Float grsX;
     private Float grsY;
     private Float grsZ;
     private Float aclX;
     private Float aclY;
     private Float aclZ;
-    private Integer numSatelites;
+    private Integer nSatellites;
     private Double latitude;
     private Double longitude;
     private Double altitude;
-    private Float velocidad;
-    private Integer actividad;
-    private Double pdop;
-    private Double hDpo;
-    private Double vDpo;
-    private Double precision;
+    private Float velocity;
+    private Integer activity;
+    private Double accuracy;
     private Timestamp dateInsert;
     private Timestamp dateUpdate;
     private Integer providerStatus;
     private Integer providerStatusUpdate;
-    private Integer dspId;
 
+    private Double dop;
+    private Double hDop;
+    private Double vDpo;
 
     public Sensor() {
     }
 
-    public Sensor(Float grsX, Float grsY, Float grsZ, Float aclX, Float aclY, Float aclZ, Integer numSatelites, Double latitude, Double longitude, Double altitude, Float velocidad, Integer actividad, Double pdop, Double hDpo, Double vDpo, Double precision, Timestamp dateInsert, Timestamp dateUpdate, Integer providerStatus, Integer providerStatusUpdate, Integer dspId) {
+    public Sensor(Float grsX, Float grsY, Float grsZ, Float aclX, Float aclY, Float aclZ, Integer nSatellites, Double latitude, Double longitude, Double altitude, Float velocity, Integer activity, Double dop, Double hDop, Double vDpo, Double accuracy, Timestamp dateInsert, Timestamp dateUpdate, Integer providerStatus, Integer providerStatusUpdate, Integer dspId) {
         this.grsX = grsX;
         this.grsY = grsY;
         this.grsZ = grsZ;
         this.aclX = aclX;
         this.aclY = aclY;
         this.aclZ = aclZ;
-        this.numSatelites = numSatelites;
+        this.nSatellites = nSatellites;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
-        this.velocidad = velocidad;
-        this.actividad = actividad;
-        this.pdop = pdop;
-        this.hDpo = hDpo;
+        this.velocity = velocity;
+        this.activity = activity;
+        this.dop = dop;
+        this.hDop = hDop;
         this.vDpo = vDpo;
-        this.precision = precision;
+        this.accuracy = accuracy;
         this.dateInsert = dateInsert;
         this.dateUpdate = dateUpdate;
         this.providerStatus = providerStatus;
@@ -103,12 +103,12 @@ public class Sensor implements Serializable {
         this.aclZ = aclZ;
     }
 
-    public Integer getNumSatelites() {
-        return numSatelites;
+    public Integer getnSatellites() {
+        return nSatellites;
     }
 
-    public void setNumSatelites(Integer numSatelites) {
-        this.numSatelites = numSatelites;
+    public void setnSatellites(Integer nSatellites) {
+        this.nSatellites = nSatellites;
     }
 
     public Double getLatitude() {
@@ -127,36 +127,36 @@ public class Sensor implements Serializable {
         this.longitude = longitude;
     }
 
-    public Float getVelocidad() {
-        return velocidad;
+    public Float getVelocity() {
+        return velocity;
     }
 
-    public void setVelocidad(Float velocidad) {
-        this.velocidad = velocidad;
+    public void setVelocity(Float velocity) {
+        this.velocity = velocity;
     }
 
-    public Integer getActividad() {
-        return actividad;
+    public Integer getActivity() {
+        return activity;
     }
 
-    public void setActividad(Integer actividad) {
-        this.actividad = actividad;
+    public void setActivity(Integer activity) {
+        this.activity = activity;
     }
 
-    public Double getPdop() {
-        return pdop;
+    public Double getDop() {
+        return dop;
     }
 
-    public void setPdop(Double pdop) {
-        this.pdop = pdop;
+    public void setDop(Double dop) {
+        this.dop = dop;
     }
 
-    public Double gethDpo() {
-        return hDpo;
+    public Double gethDop() {
+        return hDop;
     }
 
-    public void sethDpo(Double hDpo) {
-        this.hDpo = hDpo;
+    public void sethDop(Double hDop) {
+        this.hDop = hDop;
     }
 
     public Double getvDpo() {
@@ -167,12 +167,12 @@ public class Sensor implements Serializable {
         this.vDpo = vDpo;
     }
 
-    public Double getPrecision() {
-        return precision;
+    public Double getAccuracy() {
+        return accuracy;
     }
 
-    public void setPrecision(Double precision) {
-        this.precision = precision;
+    public void setAccuracy(Double accuracy) {
+        this.accuracy = accuracy;
     }
 
     public Timestamp getDateInsert() {
@@ -225,28 +225,28 @@ public class Sensor implements Serializable {
 
     @Override
     public String toString() {
-        return "Sensor {" +
-                " numSatelites=" + numSatelites  +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", altitude=" + altitude +
-                ", velocidad=" + velocidad +
-                ", actividad=" + actividad +
-                ", precision=" + precision +
+        return "Sensor{" +
+                "dspId=" + dspId +
                 ", grsX=" + grsX +
                 ", grsY=" + grsY +
                 ", grsZ=" + grsZ +
                 ", aclX=" + aclX +
                 ", aclY=" + aclY +
                 ", aclZ=" + aclZ +
-                ", pdop=" + pdop +
-                ", hDpo=" + hDpo +
-                ", vDpo=" + vDpo +
+                ", nSatellites=" + nSatellites +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", altitude=" + altitude +
+                ", velocity=" + velocity +
+                ", activity=" + activity +
+                ", accuracy=" + accuracy +
                 ", dateInsert=" + dateInsert +
                 ", dateUpdate=" + dateUpdate +
                 ", providerStatus=" + providerStatus +
                 ", providerStatusUpdate=" + providerStatusUpdate +
-                ", dspId=" + dspId +
-                " }";
+                ", dop=" + dop +
+                ", hDop=" + hDop +
+                ", vDpo=" + vDpo +
+                '}';
     }
 }

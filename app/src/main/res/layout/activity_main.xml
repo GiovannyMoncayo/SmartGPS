@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="USUARIO"
+                android:text="@string/lblTxtUserInfo"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
@@ -60,11 +60,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="@string/act_main_gyroscope_label"
+                            android:text="@string/lblGyroscope"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/gyro"
+                            android:id="@+id/txtGyroscope"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -81,11 +81,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="@string/act_main_accelerometer_label"
+                            android:text="@string/lblAccelerometer"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/accele"
+                            android:id="@+id/txtAccelerometer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -102,11 +102,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="Satelites"
+                            android:text="@string/lblNSatellites"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/nsatelites"
+                            android:id="@+id/txtNSatellites"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -123,11 +123,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="Precision"
+                            android:text="@string/lblAccuracy"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/presicion"
+                            android:id="@+id/txtAccuracy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -153,11 +153,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="Posición"
+                            android:text="@string/lblGpsInfo"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/posicion"
+                            android:id="@+id/txtGpsInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -174,11 +174,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="Velocidad"
+                            android:text="@string/lblVelocity"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/velocidad"
+                            android:id="@+id/txtVelocity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -195,34 +195,63 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp"
-                            android:text="Actividad"
+                            android:text="@string/lblActivity"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/actividad"
+                            android:id="@+id/txtActivity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:padding="5dp" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:padding="5dp"
+                            android:text="@string/lblAltitude"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                        <TextView
+                            android:id="@+id/txtAltitude"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:padding="5dp" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/sincronizate"
+                android:id="@+id/txtSync"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:padding="5dp" />
 
             <TextView
-                android:id="@+id/verification"
+                android:id="@+id/txtVerify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:padding="5dp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="5dp" />
 
         </LinearLayout>
     </RelativeLayout>

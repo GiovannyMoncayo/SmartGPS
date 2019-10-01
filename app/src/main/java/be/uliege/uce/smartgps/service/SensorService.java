@@ -19,7 +19,6 @@ import be.uliege.uce.smartgps.utilities.Constants;
 public class SensorService extends Service implements SensorEventListener {
 
     private static final String TAG = SensorService.class.getSimpleName();
-
     private SensorManager mSensorManager;
     private Sensor mSensorAcc;
     private Sensor mSensorGyr;
@@ -43,13 +42,11 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorGyr = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mSensorManager.registerListener(this, mSensorAcc, SensorManager.SENSOR_DELAY_UI, new Handler());
         mSensorManager.registerListener(this, mSensorGyr, SensorManager.SENSOR_DELAY_UI, new Handler());
-
         return START_STICKY;
     }
 
@@ -104,11 +101,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     private void broadcastSensor(be.uliege.uce.smartgps.entities.Sensor sensor) {
         Intent intent = new Intent(Constants.SENSOR_ACTIVITY);
-        intent.putExtra("sensorDates", sensor);
+        intent.putExtra(Constants.SENSOR_ACTIVITY, sensor);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-
     }
-
-
 }

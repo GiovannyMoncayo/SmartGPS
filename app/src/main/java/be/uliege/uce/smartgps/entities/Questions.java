@@ -14,7 +14,6 @@ public class Questions {
     private Timestamp dateQuiz;
 
     public Questions() {
-
     }
 
     public Questions(int idQuiz, String imgView, String txtDescription, String txtValor, List<Options> opcOptions, int type, Timestamp dateQuiz) {
@@ -25,7 +24,6 @@ public class Questions {
         this.type = type;
         this.dateQuiz = dateQuiz;
     }
-
 
     public int getIdQuiz() {
         return idQuiz;

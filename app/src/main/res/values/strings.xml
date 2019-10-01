@@ -1,8 +1,63 @@
 <resources>
     <string name="app_name">SmartGPS</string>
 
-    <string name="act_main_gyroscope_label">Giroscopio</string>
-    <string name="act_main_accelerometer_label">Acelerómetro</string>
-    <string name="act_main_no_acuracy">Sin Suficiente presición</string>
+    <!-- activity_view.xml -->
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
+    <!-- fragment_main.xml -->
+    <string name="lblTxtDescription">Descripción</string>
+    <string name="lblBtnPrev">ANTERIOR</string>
+    <string name="lblBtnNext">SIGUIENTE</string>
+    <string name="lblBtnEnd">FINALIZAR</string>
+
+    <!-- activity_main.xml -->
+    <string name="lblTxtUserInfo">User Info</string>
+    <string name="lblGyroscope">Giroscopio</string>
+    <string name="lblAccelerometer">Acelerómetro</string>
+    <string name="lblNSatellites">Satélites</string>
+    <string name="lblAccuracy">Precisión</string>
+    <string name="lblGpsInfo">Ubicación</string>
+    <string name="lblVelocity">Velocidad</string>
+    <string name="lblActivity">Actividad</string>
+    <string name="lblAltitude">Altitud</string>
+    <string name="lblTxtVerifyOk">Cuenta Activa</string>
+    <string name="lblTxtVerifyNoOk">Cuenta Inactiva. Revisa tu email para confirmar la cuenta. Si no lo encuentras, revisa el buzón de spam o verifica que el email ingresado esté correcto!! No se sincronizará la información mientras no confirmes tus datos.</string>
+    <string name="act_main_no_acuracy">Sin suficiente presición</string>
+
+    <!-- SplashActivity -->
+    <string name="msgErrorDspVerification">ERROR EN SERVICIO: No se pudo verificar dispositivo!</string>
+    <string name="msgDspUnverified">Tu dispositivo aún no ha sido verificado. Revisa tu email para confirmar la cuenta. \n Si no lo encuentras revisa el buzón de spam o verifica que el email ingresado esté correcto!!</string>
+    <string name="msgDspVerified">Dispositivo Verificado!!</string>
+
+    <!-- ViewActivity -->
+    <string name="msgGPSPermissionNoGranted">Permisos de ubicación denegados.</string>
+    <string name="msgWelcome">¡Bienvenido </string>
+    <string name="msgEmailSent">Te hemos enviado un email para confirmar tu cuenta, si no lo encuentras revísalo en el buzón de spam.\n No se sincronizará la información mientras no confirmes tus datos.</string>
+    <string name="msgErrorUser">¡Error al validar el usuario!</string>
+    <string name="msgErrorQuestionResp">Ingrese una descripción</string>
+    <string name="msgErrorQuestionOpc">Seleccione una opción</string>
+    <string name="msgErrorQuestionTxt">No se encontró descripción de la pregunta</string>
+    <string name="msgInvalidEmail">El email ingresado no es válido</string>
+    <string name="msgInvalidYear">El año debe estar entre 1950 y 2005</string>
+
+    <!-- SplashActivity ViewActivity MainActivity-->
+    <string name="msgErrorServerResponse">¡Ops! Algo salió mal. Revisa tu conexión a Internet!!</string>
+
+    <!-- MainActivity -->
+    <string name="msgManualSync">Espere un momento...</string>
+    <string name="msgManualSyncEmpty">Todos los registros están sincronizados</string>
+    <string name="msgManualSyncOk">Registros sincronizados manualmente!!</string>
+    <string name="msgManualSyncFail">ERROR EN SERVICIO: Ningún registro sincronizado!</string>
+    <string name="lblTxtNoInformation">Sin Información</string>
+    <string name="lblTxtGpsInfoLon">Longitud: </string>
+    <string name="lblTxtGpsInfoLat">Latitud: </string>
+    <string name="lblTxtSync">Datos no sincronizados: </string>
+
+    <!-- LocationService -->
+    <string name="msgTittleNotification">¡Ha deshabilitado el </string>
+    <string name="msgBodyNotification1">Active el </string>
+    <string name="msgBodyNotification2"> para continuar con la recolección de datos.</string>
+
+
 
 </resources>

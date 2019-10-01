@@ -6,10 +6,10 @@
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>>
 
     <!-- fragment_main.xml -->
-    <string name="lblTxtDescription">Description</string>
-    <string name="lblBtnPrev">PRÉCÉDENT</string>
-    <string name="lblBtnNext">SUIVANT</string>
-    <string name="lblBtnEnd">TERMINER</string>
+    <string name="lblTxtDescription">Description </string>
+    <string name="lblBtnPrev">PREVIOUS </string>
+    <string name="lblBtnNext">NEXT </string>
+    <string name="lblBtnEnd">FINISH </string>
 
     <!-- activity_main.xml -->
     <string name="lblTxtUserInfo">User Info</string>
@@ -55,10 +55,9 @@
     <string name="lblTxtSync">Non-synchronized data: </string>
 
     <!-- LocationService -->
-    <string name="msgTittleNotification">¡Désactivé </string>
-    <string name="msgBodyNotification1">Activer le </string>
-    <string name="msgBodyNotification2"> pour continuer la collecte de données.</string>
-
+    <string name="msgTittleNotification">¡Disabled </string>
+    <string name="msgBodyNotification1">Active </string>
+    <string name="msgBodyNotification2"> to continue data collection.</string>
 
 
 </resources>

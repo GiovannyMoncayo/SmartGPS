@@ -22,6 +22,7 @@ import android.util.Log;
 
 import java.util.List;
 
+import be.uliege.uce.smartgps.R;
 import be.uliege.uce.smartgps.activities.MainActivity;
 import be.uliege.uce.smartgps.entities.Sensor;
 import be.uliege.uce.smartgps.utilities.Constants;
@@ -37,9 +38,7 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
     private int nsat, msat;
     private String providerSelect;
 
-
     IBinder mBinder = new LocationService.LocalBinder();
-
 
     public class LocalBinder extends Binder {
         public LocationService getServerInstance() {
@@ -48,17 +47,13 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
     }
 
     public LocationService() {
-
     }
 
     @Override
     public void onCreate() {
-
         Log.i(TAG, "onCreate");
-
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         /*if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             providerSelect = LocationManager.GPS_PROVIDER;
             Log.e("asasasasasa","sasasas");
@@ -74,7 +69,8 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         }else {
-            lm.requestLocationUpdates(providerSelect, 0,2 , (LocationListener) this);
+            //lm.requestLocationUpdates(providerSelect, 0, 2 , (LocationListener) this);
+            lm.requestLocationUpdates(providerSelect, Constants.FREQUENCY_SECOND * 1000,2 , (LocationListener) this);
             lm.addGpsStatusListener(this);
         }
 
@@ -83,7 +79,6 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         Log.i(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
@@ -98,46 +93,41 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
 
     @Override
     public void onGpsStatusChanged(int event) {
-
         nsat = 0;
         msat = 0;
-
         Sensor sensor = new Sensor();
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         }
         gpsStatus = lm.getGpsStatus(gpsStatus);
-
-        for (GpsSatellite satelitesItem : gpsStatus.getSatellites()) {
-            if (satelitesItem.usedInFix()) {
+        for (GpsSatellite satellitesItem : gpsStatus.getSatellites()) {
+            if (satellitesItem.usedInFix()) {
                 nsat++;
             }
             msat++;
         }
-        sensor.setNumSatelites(msat);
+        //sensor.setnSatellites(msat);
+        sensor.setnSatellites(nsat);
 
-        List<String> listaProviders = lm.getAllProviders();
-        double precisionPromedio = 0.0;
-        for (String item : listaProviders) {
+        List<String> listProviders = lm.getAllProviders();
+        double avgAccuracy = 0.0;
+        for (String item : listProviders) {
             LocationProvider provider = lm.getProvider(item);
-            precisionPromedio = precisionPromedio + provider.getAccuracy();
+            avgAccuracy = avgAccuracy + provider.getAccuracy();
         }
-        precisionPromedio = precisionPromedio / listaProviders.size();
-        sensor.setPrecision(precisionPromedio);
-
+        avgAccuracy = avgAccuracy / listProviders.size();
+        sensor.setAccuracy(avgAccuracy);
         broadcastActivity(sensor);
-
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
         Sensor sensor = new Sensor();
         if(location != null) {
             sensor.setLatitude(location.getLatitude());
             sensor.setLongitude(location.getLongitude());
-            sensor.setVelocidad(location.getSpeed());
+            sensor.setVelocity(location.getSpeed());
+            sensor.setAltitude(location.getAltitude());
             broadcastActivityLocation(sensor);
         }
     }
@@ -146,7 +136,7 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
     public void onProviderDisabled(String provider) {
         Log.i(TAG, "onProviderDisabled: " + provider);
         NotificationUtils mNotificationUtils = new NotificationUtils(this);
-        Notification.Builder nb = mNotificationUtils. getAndroidChannelNotification("¡Ha deshabilitado el proveedor "+provider+".!", "Active el proveedor "+provider+" para continuar con la recolección de información.", MainActivity.class);
+        Notification.Builder nb = mNotificationUtils. getAndroidChannelNotification(getString(R.string.msgTittleNotification) + provider + ".!", getString(R.string.msgBodyNotification1) + provider + getString(R.string.msgBodyNotification2), MainActivity.class);
         mNotificationUtils.getManager().notify(101, nb.build());
     }
 
@@ -169,13 +159,13 @@ public class LocationService extends Service implements GpsStatus.Listener, Loca
 
     private void broadcastActivityLocation(Sensor sensor) {
         Intent intent = new Intent(Constants.LOCATION_ACTIVITY);
-        intent.putExtra("locationDates", sensor);
+        intent.putExtra(Constants.LOCATION_ACTIVITY, sensor);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void broadcastActivity(Sensor sensor) {
         Intent intent = new Intent(Constants.GPS_ACTIVITY);
-        intent.putExtra("gpsDates", sensor);
+        intent.putExtra(Constants.GPS_ACTIVITY, sensor);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

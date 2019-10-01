@@ -24,11 +24,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -52,6 +56,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,17 +84,19 @@ public class MainActivity extends AppCompatActivity {
     private static final int ACCESS_FINE_LOCATION_INTENT_ID = 3;
     private static final String BROADCAST_ACTION = "android.location.PROVIDERS_CHANGED";
 
-    private TextView mGyro;
-    private TextView mAcc;
-    private TextView nsatelites;
-    private TextView presicion;
-    private TextView velocidad;
-    private TextView posicion;
-    private TextView actividad;
-    private TextView infoUser;
+    private TextView txtGyroscope;
+    private TextView txtAccelerometer;
+    private TextView txtNSatellites;
+    private TextView txtAccuracy;
+    private TextView txtVelocity;
+    private TextView txtGpsInfo;
+    private TextView txtActivity;
+    private TextView txtAltitude;
+    private TextView txtUserInfo;
+    private TextView txtSync;
+    private TextView txtVerify;
+    private TextView txtTime;
     private FloatingActionButton btnUpdate;
-    private TextView sincronizate;
-    private TextView verification;
 
     private BroadcastReceiver broadcastReceiverActivity;
     private BroadcastReceiver broadcastReceiverSensor;
@@ -98,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiverGoogleLocation;
 
     private Sensor sensorObject;
-    private Map<String, String> dataSinc;
+    private Map<String, String> dataSync;
 
     private SQLiteController dbSensor;
 
@@ -106,95 +113,105 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mGyro = (TextView) findViewById(R.id.gyro);
-        mAcc = (TextView) findViewById(R.id.accele);
-        nsatelites = (TextView) findViewById(R.id.nsatelites);
-        presicion = (TextView) findViewById(R.id.presicion);
-        velocidad = (TextView) findViewById(R.id.velocidad);
-        actividad = (TextView) findViewById(R.id.actividad);
-        posicion = (TextView) findViewById(R.id.posicion);
-        infoUser = (TextView) findViewById(R.id.txtUserInfo);
-        sincronizate = (TextView) findViewById(R.id.sincronizate);
-        verification = (TextView) findViewById(R.id.verification);
+        txtGyroscope = findViewById(R.id.txtGyroscope);
+        txtAccelerometer = findViewById(R.id.txtAccelerometer);
+        txtNSatellites = findViewById(R.id.txtNSatellites);
+        txtAccuracy = findViewById(R.id.txtAccuracy);
+        txtVelocity = findViewById(R.id.txtVelocity);
+        txtActivity = findViewById(R.id.txtActivity);
+        txtGpsInfo = findViewById(R.id.txtGpsInfo);
+        txtAltitude = findViewById(R.id.txtAltitude);
+        txtUserInfo = findViewById(R.id.txtUserInfo);
+        txtSync = findViewById(R.id.txtSync);
+        txtVerify = findViewById(R.id.txtVerify);
+        txtTime = findViewById(R.id.txtTime);
         btnUpdate = findViewById(R.id.btnUpdate);
 
         User user = new Gson().fromJson(DataSession.returnDataSession(getApplicationContext(), Constants.INFO_SESSION_KEY), User.class);
-        infoUser.setText(user.getNombres()+"\n"+user.getCorreoElectronico());
-        verification.setText(user.getFcmToken());
+        txtUserInfo.setText(user.getNombres() + "\n" + user.getCorreoElectronico());
+        if (user.getFcmToken().equals("1")){
+            txtVerify.setText(getString(R.string.lblTxtVerifyOk));
+        }else{
+            txtVerify.setText(R.string.lblTxtVerifyNoOk);
+        }
 
         dbSensor = new SQLiteController(getApplicationContext());
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this,"Espere un momento...",Toast.LENGTH_SHORT).show();
-                dataSinc =  dbSensor.getAllData();
-                List<Sensor> positions =  new ArrayList<>();
-                for(Map.Entry<String, String> entry : dataSinc.entrySet()) {
-                    positions.add(new Gson().fromJson(entry.getValue(), Sensor.class));
+                Toast.makeText(MainActivity.this, getText(R.string.msgManualSync), Toast.LENGTH_SHORT).show();
+                dataSync = dbSensor.getAllData();
+                if (dataSync != null && dataSync.size()>0) {
+                    List<Sensor> positions = new ArrayList<>();
+                    for (Map.Entry<String, String> entry : dataSync.entrySet()) {
+                        positions.add(new Gson().fromJson(entry.getValue(), Sensor.class));
+                    }
+                    Log.i("json", positions.size() + " - " + new Gson().toJson(positions));
+                    User user = new Gson().fromJson(DataSession.returnDataSession(getApplicationContext(), Constants.INFO_SESSION_KEY), User.class);
+                    Map<String, String> params = new HashMap<>();
+                    params.put("type", "setInfoSensor");
+                    params.put("dspId", String.valueOf(user.getDspId()));
+                    params.put("sensorInfo", new Gson().toJson(positions));
+                    Log.i("json2", String.valueOf(positions.size()));
+                    manualDataSync(params);
+                } else {
+                    Toast.makeText(MainActivity.this, getString(R.string.msgManualSyncEmpty), Toast.LENGTH_SHORT).show();
                 }
-                Log.i("json" , String.valueOf(positions.size())+" - "+new Gson().toJson(positions));
-                User user = new Gson().fromJson(DataSession.returnDataSession(getApplicationContext(), Constants.INFO_SESSION_KEY), User.class);
-                Map<String, String> params = new HashMap<>();
-                params.put("type","setInfoSensor");
-                params.put("dspId",String.valueOf(user.getDspId()));
-                params.put("sensorInfo",new Gson().toJson(positions));
-                Log.i("json2" , String.valueOf(positions.size()));
-                sendResponse(params);
             }
         });
-
         initGoogleAPIClient();
         checkPermissions();
         initApp();
     }
 
-    public void sendResponse(final Map<String, String> params){
-
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, Constants.URL_CONSUMMER, new com.android.volley.Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-
-                Log.d(TAG+".onResponse", response);
-
-                String palabra = "OK";
-                boolean resultado = response.contains(palabra);
-
-                if(response != null && resultado){
-                    if(dataSinc != null) {
-                        for (Map.Entry<String, String> entry : dataSinc.entrySet()) {
-                            try {
-                                dbSensor.deleteData(Integer.parseInt(entry.getKey()));
-                            } catch (Exception e) {
-                                Log.e(TAG + ".onResponse", "Error el eliminar por id " + entry.getKey());
+    public void manualDataSync(final Map<String, String> params) {
+        RequestQueue queue;
+        // Instantiate the cache
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+        // Set up the network to use HttpURLConnection as the HTTP client.
+        Network network = new BasicNetwork(new HurlStack());
+        // Instantiate the RequestQueue with the cache and network.
+        queue = new RequestQueue(cache, network);
+        // Start the queue
+        queue.start();
+        //RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        StringRequest postRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_CONSUMMER,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG + ".onResponseMDS", response);
+                        String palabra = "OK";
+                        boolean resultado = response.contains(palabra);
+                        if (response != null && resultado) {
+                            for (Map.Entry<String, String> entry : dataSync.entrySet()) {
+                                try {
+                                    dbSensor.deleteData(Integer.parseInt(entry.getKey()));
+                                } catch (Exception e) {
+                                    Log.e(TAG + ".onResponseMDS", "Error al eliminar por id " + entry.getKey());
+                                }
                             }
+                            //final String url = Constants.URL_NOTIFICADOR_TELEGRAM + "?msj=" + (Build.MODEL + " --> Ha sincronizado " + dataSync.size() + " elementos manualmente " + new Timestamp(System.currentTimeMillis()) + ".").replace(" ", "%20");
+                            //new Thread(new Runnable() {
+                            //    public void run() {
+                            //        new GetUrlContentTask().execute(url);
+                            //    }
+                            //}).start();
+                            Toast.makeText(MainActivity.this, dataSync.size() +" "+ getString(R.string.msgManualSyncOk), Toast.LENGTH_LONG).show();
+                            dataSync = null;
+                            response = null;
+                        } else {
+                            Toast.makeText(MainActivity.this, getString(R.string.msgManualSyncFail), Toast.LENGTH_SHORT).show();
+                            dataSync = null;
                         }
-
-                        final String url = Constants.URL_NOTIFICATION+"?msj="+ (Build.MODEL+" --> Ha sincronizado "+dataSinc.size()+" elementos manualmente "+String.valueOf(new Timestamp(System.currentTimeMillis()))+"." ).replace(" ", "%20");
-                        new Thread(new Runnable() {
-                            public void run(){
-                                new GetUrlContentTask().execute(url);
-                            }
-                        }).start();
-
-                        dataSinc = null;
-                        Toast.makeText(MainActivity.this, "Sincronizado", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    dataSinc = null;
-                    Toast.makeText(MainActivity.this,"No Sincronizado",Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        },
+                },
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this,"¡Ops... Algo salió mal.\nIntenta más tarde!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getString(R.string.msgErrorServerResponse), Toast.LENGTH_SHORT).show();
                     }
                 }
         ) {
@@ -207,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void initGoogleAPIClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(MainActivity.this)
                 .addApi(LocationServices.API)
@@ -216,10 +232,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { //Version 6 Marshmallow o superior
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestLocationPermission();
-            }else {
+            } else {
                 showSettingDialog();
             }
         } else
@@ -229,23 +245,27 @@ public class MainActivity extends AppCompatActivity {
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INTENT_ID);
-
         } else {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INTENT_ID);
         }
     }
 
     private void showSettingDialog() {
+        LocationRequest locRequestHighAccuracy = LocationRequest.create();
+        locRequestHighAccuracy.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//Setting priotity of Location request to high
+        locRequestHighAccuracy.setInterval(30 * 1000);
+        locRequestHighAccuracy.setFastestInterval(5 * 1000);
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//Setting priotity of Location request to high
-        locationRequest.setInterval(30 * 1000);
-        locationRequest.setFastestInterval(5 * 1000);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
+        LocationRequest locRequestBalancedPowerAccuracy = LocationRequest.create();
+        locRequestBalancedPowerAccuracy.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(locRequestBalancedPowerAccuracy);
+        builder.addLocationRequest(locRequestHighAccuracy);
         builder.setAlwaysShow(true);
 
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        //Task<LocationSettingsResponse> result1 = LocationServices.getSettingsClient(this).checkLocationSettings(builder.build());
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
             public void onResult(LocationSettingsResult result) {
@@ -274,10 +294,10 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case RESULT_OK:
-                        Log.e("Settings", "Result OK");
+                        Log.e(TAG +".onActivityResultMA", "Settings Result OK");
                         break;
                     case RESULT_CANCELED:
-                        Log.e("Settings", "Result Cancel");
+                        Log.e(TAG +".onActivityResultMA", "Settings Result Cancel");
                         break;
                 }
                 break;
@@ -294,15 +314,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
             if (intent.getAction().matches(BROADCAST_ACTION)) {
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    Log.e("About GPS", "GPS is Enabled in your device");
+                    Log.e(TAG + ".gpsLocationReceiver", "GPS is Enabled in your device");
                 } else {
                     new Handler().postDelayed(sendUpdatesToUI, 10);
-                    Log.e("About GPS", "GPS is Disabled in your device");
+                    Log.e(TAG + ".gpsLocationReceiver", "GPS is Disabled in your device");
                 }
             }
         }
@@ -314,15 +332,13 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case ACCESS_FINE_LOCATION_INTENT_ID: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     if (mGoogleApiClient == null) {
                         initGoogleAPIClient();
                         showSettingDialog();
                     } else
                         showSettingDialog();
-
                 } else {
-                    Toast.makeText(MainActivity.this, "Permisos de ubicación denegados.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.msgGPSPermissionNoGranted), Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 return;
@@ -331,43 +347,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private void initApp(){
-
-
+    private void initApp() {
         sensorObject = new Sensor();
 
-        mGyro.setText("Sin Información");
-        mAcc.setText("Sin Información");
-        nsatelites.setText("Sin Información");
-        presicion.setText("Sin Información");
-        velocidad.setText("Sin Información");
-        actividad.setText("Sin Información");
-        posicion.setText("Sin Información");
-
+        txtGyroscope.setText(getString(R.string.lblTxtNoInformation));
+        txtAccelerometer.setText(getString(R.string.lblTxtNoInformation));
+        txtNSatellites.setText(getString(R.string.lblTxtNoInformation));
+        txtAccuracy.setText(getString(R.string.lblTxtNoInformation));
+        txtGpsInfo.setText(getString(R.string.lblTxtNoInformation));
+        txtVelocity.setText(getString(R.string.lblTxtNoInformation));
+        txtActivity.setText(getString(R.string.lblTxtNoInformation));
+        txtAltitude.setText(getString(R.string.lblTxtNoInformation));
 
         broadcastReceiverSensor = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if (intent.getAction().equals(Constants.SENSOR_ACTIVITY)) {
-
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("sensorDates");
-
-                    if(sensor.getAclX() != null && !sensor.getAclX().equals("null")) {
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.SENSOR_ACTIVITY);
+                    if (sensor.getAclX() != null && !sensor.getAclX().equals("null")) {
                         sensorObject.setAclX(sensor.getAclX());
                         sensorObject.setAclY(sensor.getAclY());
                         sensorObject.setAclZ(sensor.getAclZ());
                     }
-
-                    if(sensor.getGrsX() != null && !sensor.getGrsX().equals("null")) {
+                    if (sensor.getGrsX() != null && !sensor.getGrsX().equals("null")) {
                         sensorObject.setGrsX(sensor.getGrsX());
                         sensorObject.setGrsY(sensor.getGrsY());
                         sensorObject.setGrsZ(sensor.getGrsZ());
                     }
-
-                    mAcc.setText("X: " + sensorObject.getAclX() + "\nY: " + sensorObject.getAclY() + "\nZ: " + sensorObject.getAclZ());
-                    mGyro.setText("X: " + sensorObject.getGrsX() + "\nY: " + sensorObject.getGrsY() + "\nZ: " + sensorObject.getGrsZ());
+                    txtAccelerometer.setText("X: " + sensorObject.getAclX() + "\nY: " + sensorObject.getAclY() + "\nZ: " + sensorObject.getAclZ());
+                    txtGyroscope.setText("X: " + sensorObject.getGrsX() + "\nY: " + sensorObject.getGrsY() + "\nZ: " + sensorObject.getGrsZ());
                 }
             }
         };
@@ -375,16 +383,12 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiverGps = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if (intent.getAction().equals(Constants.GPS_ACTIVITY)) {
-
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("gpsDates");
-
-                    sensorObject.setPrecision(sensor.getPrecision());
-                    sensorObject.setNumSatelites(sensor.getNumSatelites());
-
-                    nsatelites.setText(sensorObject.getNumSatelites().toString());
-                    presicion.setText(sensorObject.getPrecision().toString());
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.GPS_ACTIVITY);
+                    sensorObject.setAccuracy(sensor.getAccuracy());
+                    sensorObject.setnSatellites(sensor.getnSatellites());
+                    txtNSatellites.setText(sensorObject.getnSatellites().toString());
+                    txtAccuracy.setText(sensorObject.getAccuracy().toString());
                 }
             }
         };
@@ -392,19 +396,20 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiverLocation = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if (intent.getAction().equals(Constants.LOCATION_ACTIVITY)) {
-
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("locationDates");
-
-                    sensorObject.setVelocidad(sensor.getVelocidad());
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.LOCATION_ACTIVITY);
+                    sensorObject.setVelocity(sensor.getVelocity());
                     sensorObject.setLongitude(sensor.getLongitude());
                     sensorObject.setLatitude(sensor.getLatitude());
+                    sensorObject.setAltitude(sensor.getAltitude());
 
-                    velocidad.setText(sensorObject.getVelocidad().toString());
-                    posicion.setText("Longitud: "+sensorObject.getLongitude()+"\nLatitud: "+sensorObject.getLatitude());
+                    txtGpsInfo.setText(getString(R.string.lblTxtGpsInfoLon) + sensorObject.getLongitude() + "\n" +
+                            getString(R.string.lblTxtGpsInfoLat) + sensorObject.getLatitude());
+                    txtVelocity.setText(sensorObject.getVelocity().toString());
+                    txtAltitude.setText(sensorObject.getAltitude().toString());
 
-                    sincronizate.setText("Elementos no sincronizados: "+String.valueOf(dbSensor.getAllData().size()));
+                    txtSync.setText(getString(R.string.lblTxtSync) + dbSensor.getAllData().size());
+                    txtTime.setText(new Date().toString());
                 }
             }
         };
@@ -412,14 +417,11 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiverActivity = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if (intent.getAction().equals(Constants.DETECTED_ACTIVITY)) {
-
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("detectedActivities");
-
-                    if(sensor != null && sensor.getActividad() != null){
-                        sensorObject.setActividad(sensor.getActividad());
-                        actividad.setText(Utilidades.getActivityLabel(sensorObject.getActividad() != null ? sensorObject.getActividad() : DetectedActivity.UNKNOWN));
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.DETECTED_ACTIVITY);
+                    if (sensor != null && sensor.getActivity() != null) {
+                        sensorObject.setActivity(sensor.getActivity());
+                        txtActivity.setText(Utilidades.getActivityLabel(sensorObject.getActivity() != null ? sensorObject.getActivity() : DetectedActivity.UNKNOWN));
                     }
                 }
             }
@@ -428,28 +430,27 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiverGoogleLocation = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if (intent.getAction().equals(Constants.GOOGLE_LOCATION_ACTIVITY)) {
-
-                    Sensor sensor = (Sensor) intent.getSerializableExtra("googleLocationDate");
-                    if(sensor != null && sensor.getLatitude()!= null) {
-                        if(sensorObject.getLatitude() == null) {
+                    Sensor sensor = (Sensor) intent.getSerializableExtra(Constants.GOOGLE_LOCATION_ACTIVITY);
+                    if (sensor != null && sensor.getLatitude() != null) {
+                        if (sensorObject.getLatitude() == null) {
                             sensorObject.setLatitude(sensor.getLatitude());
-                            sincronizate.setText("Elementos no sincronizados: "+String.valueOf(dbSensor.getAllData().size()));
+                            txtSync.setText(getString(R.string.lblTxtSync) + dbSensor.getAllData().size());
+                            txtTime.setText(new Date().toString());
                         }
 
-                        if(sensorObject.getVelocidad() == null) {
-                            sensorObject.setVelocidad(sensor.getVelocidad());
+                        if (sensorObject.getVelocity() == null) {
+                            sensorObject.setVelocity(sensor.getVelocity());
                         }
 
-                        if(sensorObject.getLongitude() == null) {
+                        if (sensorObject.getLongitude() == null) {
                             sensorObject.setLongitude(sensor.getLongitude());
                         }
 
                         sensorObject.setAltitude(sensor.getAltitude());
 
-                        velocidad.setText(sensorObject.getVelocidad() != null ? sensorObject.getVelocidad().toString():"");
-                        posicion.setText("Longitud: " + sensorObject.getLongitude() + "\nLatitud: " + sensorObject.getLatitude());
+                        txtVelocity.setText(sensorObject.getVelocity() != null ? sensorObject.getVelocity().toString() : "");
+                        txtGpsInfo.setText(getString(R.string.lblTxtGpsInfoLon) + sensorObject.getLongitude() + "\n" + getString(R.string.lblTxtGpsInfoLat) + sensorObject.getLatitude());
 
                     }
                 }
@@ -481,16 +482,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intentGoogleLocation = new Intent(MainActivity.this, GoogleLocationService.class);
         startService(intentGoogleLocation);
 
-
         Intent intentMain = new Intent(MainActivity.this, MainService.class);
         startService(intentMain);
-
     }
 
 
     private class GetUrlContentTask extends AsyncTask<String, Integer, String> {
         protected String doInBackground(String... urls) {
-
             URL url = null;
             try {
                 url = new URL(urls[0]);
@@ -511,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(e.getMessage()));
             } catch (ProtocolException e) {
                 Log.e(TAG, String.valueOf(e.getMessage()));
-            } catch (SocketTimeoutException e){
+            } catch (SocketTimeoutException e) {
                 Log.e(TAG, String.valueOf(e.getMessage()));
             } catch (IOException e) {
                 Log.e(TAG, String.valueOf(e.getMessage()));
@@ -523,17 +521,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String result) {
-            if(result != null) {
+            if (result != null) {
                 //Log.e(TAG, result);
-            }else{
-                Log.e(TAG+" GetUrlContentTask", "Result is null");
+            } else {
+                Log.e(TAG + " GetUrlContentTask", "Result is null");
             }
         }
     }
-
-
-
-
 
     @Override
     protected void onResume() {
@@ -559,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
     }
 

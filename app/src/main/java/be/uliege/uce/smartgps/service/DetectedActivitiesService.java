@@ -33,7 +33,6 @@ public class DetectedActivitiesService extends Service {
     }
 
     public DetectedActivitiesService() {
-
     }
 
     @Override
@@ -61,24 +60,21 @@ public class DetectedActivitiesService extends Service {
         Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
                 Constants.DETECTION_INTERVAL_IN_MILLISECONDS,
                 mPendingIntent);
-
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
                 Log.i( TAG,  "Starting detected activity.");
             }
         });
-
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.i( TAG,  "Requesting activity updates failed to start.");
             }
         });
-
     }
 
-    public void removeActivityUpdatesButtonHandler() {
+   /* public void removeActivityUpdatesButtonHandler() {
         Task<Void> task = mActivityRecognitionClient.removeActivityUpdates(
                 mPendingIntent);
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -95,6 +91,7 @@ public class DetectedActivitiesService extends Service {
             }
         });
     }
+*/
 
     @Override
     public void onDestroy() {

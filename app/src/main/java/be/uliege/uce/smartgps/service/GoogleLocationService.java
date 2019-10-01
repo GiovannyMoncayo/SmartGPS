@@ -99,7 +99,7 @@ public class GoogleLocationService extends Service implements GoogleApiClient.Co
             sensor.setLatitude(location.getLatitude());
             sensor.setLongitude(location.getLongitude());
             sensor.setAltitude(location.getAltitude());
-            sensor.setVelocidad(location.getSpeed());
+            sensor.setVelocity(location.getSpeed());
 
             broadcastGoogleLocation(sensor);
 
@@ -121,7 +121,7 @@ public class GoogleLocationService extends Service implements GoogleApiClient.Co
 
     private void broadcastGoogleLocation(be.uliege.uce.smartgps.entities.Sensor sensor) {
         Intent intent = new Intent(Constants.GOOGLE_LOCATION_ACTIVITY);
-        intent.putExtra("googleLocationDate", sensor);
+        intent.putExtra(Constants.GOOGLE_LOCATION_ACTIVITY, sensor);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

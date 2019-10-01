@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="be.uliege.uce.smartgps">
 
-
     <uses-feature
         android:name="android.hardware.sensor.proximity"
         android:required="true" />
@@ -13,15 +12,10 @@
         android:name="android.hardware.location.gps"
         android:required="true"/>
 
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-
 
     <application
         android:allowBackup="true"
@@ -31,12 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".activities.ViewActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
         <activity android:name=".activities.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -45,6 +33,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.ViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <service
             android:name=".service.DetectedActivitiesIntentService"
@@ -72,6 +65,4 @@
             android:enabled="true" ></service>
 
     </application>
-
-
 </manifest>

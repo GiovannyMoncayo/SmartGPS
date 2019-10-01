@@ -1,6 +1,8 @@
 package be.uliege.uce.smartgps.entities;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private int id;
     private String usuario;
@@ -48,9 +50,7 @@ public class User {
         this.correoElectronico = correoElectronico;
     }
 
-    public String getFcmToken() {
-        return fcmToken;
-    }
+    public String getFcmToken() { return fcmToken;}
 
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
